@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_store_app/dashboard_components/balance.dart';
 import 'package:multi_store_app/dashboard_components/edit_business.dart';
@@ -45,7 +46,8 @@ class DashboardScreen extends StatelessWidget {
         title: const AppBarTitle(title: 'Dashboard'),
         actions: [
           IconButton(
-            onPressed: () {
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
               Navigator.pushReplacementNamed(context, '/welcome_screen');
             },
             icon: const Icon(Icons.logout),

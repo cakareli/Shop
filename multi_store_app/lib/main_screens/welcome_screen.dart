@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_store_app/main_screens/supplier_home.dart';
 import 'package:multi_store_app/widgets/yellow_button.dart';
@@ -23,6 +25,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     Colors.purple,
     Colors.teal,
   ];
+  bool processing = false;
   final textStyle = const TextStyle(
       fontSize: 45, fontWeight: FontWeight.bold, fontFamily: 'Acme');
 
@@ -138,14 +141,17 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                                 label: 'Log In',
                                 onPressed: () {
                                   Navigator.pushReplacementNamed(
-                                      context, '/supplier_home');
+                                      context, '/supplier_login');
                                 },
                                 width: 0.25),
                             Padding(
                               padding: const EdgeInsets.only(right: 8.0),
                               child: YellowButton(
                                   label: 'Sign Up',
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.pushReplacementNamed(
+                                        context, '/supplier_signup');
+                                  },
                                   width: 0.25),
                             )
                           ],
@@ -177,9 +183,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                               label: 'Log In',
                               onPressed: () {
                                 Navigator.pushReplacementNamed(
-                                  context,
-                                  '/customer_home',
-                                );
+                                    context, '/customer_login');
                               },
                               width: 0.25),
                         ),
@@ -215,21 +219,45 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         ),
                       ),
                       GoogleFacebookLogin(
-                        label: 'Google',
+                        label: 'Facebook',
                         onPressed: () {},
                         child: const Image(
                           image: AssetImage('images/inapp/facebook.jpg'),
                         ),
                       ),
-                      GoogleFacebookLogin(
-                        label: 'Google',
-                        onPressed: () {},
-                        child: const Icon(
-                          Icons.person,
-                          color: Colors.lightBlueAccent,
-                          size: 50,
-                        ),
-                      )
+                      processing
+                          ? const CircularProgressIndicator()
+                          : GoogleFacebookLogin(
+                              label: 'Guest',
+                              onPressed: () async {
+                                setState(() {
+                                  processing = true;
+                                });
+                                CollectionReference customers =
+                                    FirebaseFirestore.instance
+                                        .collection('customers');
+                                await FirebaseAuth.instance.signInAnonymously();
+                                String _uid =
+                                    FirebaseAuth.instance.currentUser!.uid;
+                                await customers
+                                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                                    .set({
+                                  'name': '',
+                                  'email': '',
+                                  'profileImage': '',
+                                  'phone': '',
+                                  'address': '',
+                                  'cid': _uid,
+                                });
+                                Navigator.pushReplacementNamed(
+                                    context, '/customer_home');
+                              },
+                              child: const Icon(
+                                Icons.person,
+                                color: Colors.lightBlueAccent,
+                                size: 50,
+                              ),
+                            )
                     ],
                   ),
                 ),

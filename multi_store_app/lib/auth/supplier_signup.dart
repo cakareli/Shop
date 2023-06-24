@@ -8,14 +8,14 @@ import 'package:image_picker/image_picker.dart';
 import '../widgets/auth_widgets.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-class CustomerRegisterScreen extends StatefulWidget {
-  const CustomerRegisterScreen({Key? key}) : super(key: key);
+class SupplierRegisterScreen extends StatefulWidget {
+  const SupplierRegisterScreen({Key? key}) : super(key: key);
 
   @override
-  State<CustomerRegisterScreen> createState() => _CustomerRegisterScreenState();
+  State<SupplierRegisterScreen> createState() => _SupplierRegisterScreenState();
 }
 
-class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
+class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
   bool passwordVisibile = false;
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
@@ -23,18 +23,18 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  late String name;
+  late String storeName;
   late String email;
   late String password;
-  late String profileImage;
+  late String storeLogo;
 
   XFile? _imageFile;
   dynamic _pickedImageError;
   final _picker = ImagePicker();
   bool processing = false;
 
-  CollectionReference customers =
-      FirebaseFirestore.instance.collection('customers');
+  CollectionReference suppliers =
+      FirebaseFirestore.instance.collection('suppliers');
 
   void _pickImageFromCamera() async {
     try {
@@ -77,34 +77,35 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
     if (_formKey.currentState!.validate()) {
       if (_imageFile != null) {
         try {
-          name = _nameController.text;
+          storeName = _nameController.text;
           email = _emailController.text;
           password = _passwordController.text;
           await FirebaseAuth.instance
               .createUserWithEmailAndPassword(email: email, password: password);
-          debugPrint(name);
+          debugPrint(storeName);
           debugPrint(email);
           debugPrint(password);
 
           firebase_storage.Reference ref = firebase_storage
               .FirebaseStorage.instance
-              .ref('customer-images/$email.jpg');
+              .ref('supplier-images/$email.jpg');
           await ref.putFile(File(_imageFile!.path));
-          profileImage = await ref.getDownloadURL();
+          storeLogo = await ref.getDownloadURL();
           String _uid = FirebaseAuth.instance.currentUser!.uid;
-          await customers.doc(FirebaseAuth.instance.currentUser!.uid).set({
-            'name': name,
+          await suppliers.doc(FirebaseAuth.instance.currentUser!.uid).set({
+            'storeName': storeName,
             'email': email,
-            'profileImage': profileImage,
+            'storeLogo': storeLogo,
             'phone': '',
             'address': '',
             'cid': _uid,
+            'coverImage': '',
           });
           _formKey.currentState?.reset();
           setState(() {
             _imageFile = null;
           });
-          Navigator.pushReplacementNamed(context, '/customer_login');
+          Navigator.pushReplacementNamed(context, '/supplier_login');
         } on FirebaseAuthException catch (e) {
           if (e.code == 'weak-password') {
             setState(() {
