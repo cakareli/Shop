@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:multi_store_app/main_screens/supplier_home.dart';
 import 'package:multi_store_app/widgets/yellow_button.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
@@ -33,7 +32,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   void initState() {
     super.initState();
     _controller =
-        AnimationController(vsync: this, duration: Duration(seconds: 2));
+        AnimationController(vsync: this, duration: const Duration(seconds: 2));
     _controller.repeat();
   }
 

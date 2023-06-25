@@ -14,7 +14,6 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
   bool passwordVisibile = false;
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
-  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 

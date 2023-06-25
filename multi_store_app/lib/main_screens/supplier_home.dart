@@ -1,10 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:multi_store_app/main_screens/cart.dart';
 import 'package:multi_store_app/main_screens/dashboard.dart';
 import 'package:multi_store_app/main_screens/home.dart';
-import 'package:multi_store_app/main_screens/profile.dart';
 import 'package:multi_store_app/main_screens/store.dart';
+import 'package:multi_store_app/main_screens/upload_product.dart';
 
 import 'category.dart';
 
@@ -22,7 +20,7 @@ class _SupplierHomeScreenState extends State<SupplierHomeScreen> {
     CategoryScreen(),
     const StoreScreen(),
     DashboardScreen(),
-    Center(child: Text('Upload')),
+    UploadProductScreen(),
   ];
   _changeIndex(int index) {
     selectedIndex = index;
